@@ -50,15 +50,11 @@
             cursor: pointer;
             margin-top: 20px;
             display: none;
-            transition: background-color 0.3s;
-        }
-
-        .start-button:hover {
-            background-color: #45a049;
         }
 
         .interactive-section {
             display: none;
+            opacity: 0;
             align-items: center;
             justify-content: space-between;
             position: fixed;
@@ -70,16 +66,10 @@
             background-color: #f4f4f4;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: opacity 1s ease-in-out;
         }
 
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        #generateCupButton,
-        #confirmButton {
+        #generateCupButton, #confirmButton, #returnButton {
             margin: 10px 0;
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -87,65 +77,84 @@
             border: none;
             cursor: pointer;
             border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        #generateCupButton:hover,
-        #confirmButton:hover {
-            background-color: #45a049;
         }
 
         #confirmButton {
             background-color: #d9534f;
         }
 
-        #confirmButton:hover {
-            background-color: #c9302c;
+        #returnButton {
+            background-color: #5bc0de;
         }
 
         .image-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            justify-content: flex-end;
         }
 
         .cup-image {
             width: 80px;
             height: auto;
             opacity: 0;
-            transition: opacity 0.6s ease-in-out, transform 0.4s ease;
-            transform: translateY(20px);
+            transition: opacity 0.6s ease-in-out;
         }
 
-        .cup-image.visible {
-            opacity: 1;
-            transform: translateY(0);
+        .sticky-box {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 250px;
+            background-color: #fff;
+            border: 2px solid #4CAF50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        #stickySummaryContent {
+            padding: 10px;
+        }
+
+        #summaryText {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        #collapseButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Initial Text Containers -->
     <div class="container" id="textContainer">
         <div class="text-container">
             <h2>Introduction to the Ceramic Cup Company</h2>
             <p>Welcome to our innovative ceramic cup company...</p>
         </div>
-        
         <div class="text-container">
             <h2>The Common Oversights within Simple Industries</h2>
             <p>Many industries overlook the environmental impact of their operations...</p>
         </div>
-        
         <div class="text-container">
             <h2>A Funny Way to Segway into Ownership</h2>
             <p>So, picture this: I stumbled upon the ceramic cup company...</p>
         </div>
-        
         <button id="startButton" class="start-button">Click to begin the simulation</button>
     </div>
 
-    <!-- Interactive cup generation section -->
+    <!-- Interactive Section -->
     <div class="interactive-section" id="interactiveSection">
         <div class="button-container">
             <button id="generateCupButton">Generate Cup</button>
@@ -154,66 +163,79 @@
         <div class="image-container" id="imageContainer"></div>
     </div>
 
+    <!-- Sticky Summary Box -->
+    <div class="sticky-box" id="stickySummaryBox">
+        <div id="stickySummaryContent">
+            <p id="summaryText">No. of cups: 0<br>CO2 Emitted: 0 kg</p>
+        </div>
+        <button id="collapseButton" onclick="toggleSummaryBox()">Click to collapse</button>
+        <button id="returnButton" onclick="returnToText()">Return to Article</button>
+    </div>
+
     <script>
         const textContainers = document.querySelectorAll('.text-container');
-        let currentIndex = 0;
-
-        function showNextText() {
-            if (currentIndex < textContainers.length) {
-                textContainers[currentIndex].classList.add('visible');
-                currentIndex++;
-                setTimeout(showNextText, 1000);
-            } else {
-                document.getElementById('startButton').style.display = 'block';
-            }
-        }
-
-        window.onload = showNextText;
-
         const startButton = document.getElementById('startButton');
         const textContainer = document.getElementById('textContainer');
         const interactiveSection = document.getElementById('interactiveSection');
         const generateCupButton = document.getElementById('generateCupButton');
         const confirmButton = document.getElementById('confirmButton');
         const imageContainer = document.getElementById('imageContainer');
+        const stickyBox = document.getElementById('stickySummaryBox');
+        const summaryText = document.getElementById('summaryText');
+        const stickySummaryContent = document.getElementById('stickySummaryContent');
+        const collapseButton = document.getElementById('collapseButton');
+        const returnButton = document.getElementById('returnButton');
 
         let cupCount = 0;
 
-        startButton.addEventListener('click', () => {
-            textContainers.forEach(container => {
-                container.style.transform = 'translateX(-100%)';
-                container.style.opacity = '0';
-            });
-
-            setTimeout(() => {
-                textContainer.style.display = 'none';
-                interactiveSection.style.display = 'flex';
+        function showNextText() {
+            let currentIndex = 0;
+            const interval = setInterval(() => {
+                if (currentIndex < textContainers.length) {
+                    textContainers[currentIndex].classList.add('visible');
+                    currentIndex++;
+                } else {
+                    startButton.style.display = 'block';
+                    clearInterval(interval);
+                }
             }, 1000);
+        }
+
+        window.onload = showNextText;
+
+        startButton.addEventListener('click', () => {
+            textContainer.style.display = 'none';
+            interactiveSection.style.display = 'flex';
+            setTimeout(() => {
+                interactiveSection.style.opacity = 1;
+            }, 100);
         });
 
         generateCupButton.addEventListener('click', () => {
             const img = document.createElement('img');
             img.src = 'https://img.lovepik.com/png/20231019/Steaming-delicious-coffee-and-white-cup-drink-grease_266398_wh1200.png';
-            img.alt = 'Cup Image';
             img.classList.add('cup-image');
-
             imageContainer.appendChild(img);
-
-            setTimeout(() => {
-                img.classList.add('visible');
-            }, 10);
-
+            setTimeout(() => { img.style.opacity = 1; }, 10);
             cupCount++;
             confirmButton.disabled = false;
         });
 
         confirmButton.addEventListener('click', () => {
-            generateCupButton.disabled = true;
-            confirmButton.disabled = true;
-
+            interactiveSection.style.display = 'none';
             const carbonProduced = (cupCount * 1.22).toFixed(2);
-            alert(`You have produced ${cupCount} cups.\nCO2 Emitted: ${carbonProduced} kg`);
+            summaryText.innerHTML = `No. of cups: ${cupCount}<br>CO2 Emitted: ${carbonProduced} kg`;
+            stickyBox.style.display = 'block';
         });
+
+        function toggleSummaryBox() {
+            stickySummaryContent.style.display = stickySummaryContent.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function returnToText() {
+            stickyBox.style.display = 'none';
+            textContainer.style.display = 'block';
+        }
     </script>
 </body>
 </html>
