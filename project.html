@@ -3,307 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <title>Carbon Sequestration Article Finished</title>
     <style>
         body {
-            background-color: rgb(177, 217, 177); /* Background contrasting the container */
+            background-color: rgb(177, 217, 177);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
         }
 
         .container {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             padding: 20px;
-        }
-
-        .left-side {
-            flex: 0 0 60%;
-            padding-right: 20px;
-        }
-
-        .right-side {
-            flex: 0 0 35%;
-            position: sticky;
-            top: 20px;
-            display: block; /* Initially shown */
         }
 
         .text-container {
             background-color: #dfdbe0;
             border: 1px solid #ccc;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             padding: 20px;
             border-left: 5px solid #4CAF50;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-
-
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            width: 50%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 0.5s ease;
         }
 
-        .text-container-2 {
-            display: none;
-            background-color: #dfdbe0;
-            border: 1px solid #ccc;
-            margin-bottom: 50px;
-            padding: 20px;
-            border-left: 5px solid #4CAF50;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-
+        .text-container.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        h2 {
-            font-weight: 700;
-            font-size: 34px;
-        }
-
-        button {
-            margin: 10px 0;
-            padding: 10px;
+        .start-button {
             background-color: #4CAF50;
             color: white;
             border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
             cursor: pointer;
+            margin-top: 20px;
+            display: none;
             transition: background-color 0.3s;
         }
 
-        button:hover {
+        .start-button:hover {
             background-color: #45a049;
         }
 
-        /* Sticky collapsible box */
-        .sticky-box {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 250px;
-            background-color: #fff;
-            border: 2px solid #4CAF50;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            padding: 10px;
+        .interactive-section {
             display: none;
-        }
-
-        #summaryText {
-            font-size: 14px;
-            margin: 0;
-        }
-
-        #collapseButton {
-            margin-top: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        #collapseButton:hover {
-            background-color: #45a049;
-        }
-
-        /* Title and subtitle styling */
-        #productionTitle {
+            align-items: center;
+            justify-content: space-between;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center;
-            color: #333;
-            background-color: rgba(255, 255, 255, 0.9);
+            width: 600px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            z-index: 1000;
-            transition: opacity 1s ease-in-out;
-            display: none;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        #productionTitle h1 {
-            font-size: 32px;
-            margin: 0;
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        #productionTitle p {
-            font-size: 18px;
-            font-style: italic;
-            margin-top: 10px;
-        }
-
-        /* Button for returning to the article */
-        #returnButton {
-            margin-top: 20px;
-            padding: 10px;
+        #generateCupButton,
+        #confirmButton {
+            margin: 10px 0;
+            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 8px;
             transition: background-color 0.3s;
-            font-size: 16px;
         }
 
-        #returnButton:hover {
+        #generateCupButton:hover,
+        #confirmButton:hover {
             background-color: #45a049;
         }
 
+        #confirmButton {
+            background-color: #d9534f;
+        }
+
+        #confirmButton:hover {
+            background-color: #c9302c;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .cup-image {
+            width: 80px;
+            height: auto;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.4s ease;
+            transform: translateY(20px);
+        }
+
+        .cup-image.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="left-side">
-            <div class="text-container fade discriminator">
-                <h2>Introduction to the Ceramic Cup Company</h2>
-                <p>Welcome to our innovative ceramic cup company...</p>
-            </div>
-            
-            <div class="text-container fade discriminator">
-                <h2>The Common Oversights within Simple Industries</h2>
-                <p>Many industries overlook the environmental impact of their operations...</p>
-            </div>
-            
-            <div class="text-container fade discriminator">
-                <h2>A Funny Way to Segway into Ownership</h2>
-                <p>So, picture this: I stumbled upon the ceramic cup company...</p>
-            </div>
-
-            <div class="text-container-2">
-                <h2>Understanding Carbon Sequestration</h2>
-                <p>Carbon sequestration is the process of capturing and storing atmospheric carbon dioxide...</p>
-            </div>
-
-            <div class="text-container-2">
-                <h2>How Trees Help</h2>
-                <p>Trees absorb CO2 during photosynthesis...</p>
-            </div>
-
-            <div class="text-container-2">
-                <h2>The Impact of Planting Trees</h2>
-                <p>Planting trees can significantly offset carbon emissions and combat climate change...</p>
-            </div>
+    <div class="container" id="textContainer">
+        <div class="text-container">
+            <h2>Introduction to the Ceramic Cup Company</h2>
+            <p>Welcome to our innovative ceramic cup company...</p>
         </div>
+        
+        <div class="text-container">
+            <h2>The Common Oversights within Simple Industries</h2>
+            <p>Many industries overlook the environmental impact of their operations...</p>
+        </div>
+        
+        <div class="text-container">
+            <h2>A Funny Way to Segway into Ownership</h2>
+            <p>So, picture this: I stumbled upon the ceramic cup company...</p>
+        </div>
+        
+        <button id="startButton" class="start-button">Click to begin the simulation</button>
+    </div>
 
-        <!-- Right side - Cup Generation -->
-        <div class="right-side">
-            <h3>Produce a cup!</h3>
+    <!-- Interactive cup generation section -->
+    <div class="interactive-section" id="interactiveSection">
+        <div class="button-container">
             <button id="generateCupButton">Generate Cup</button>
-            <div class="image-container" id="imageContainer"></div>
-            <button id="confirmButton" onclick="Lock()">Confirm your selection</button>  
+            <button id="confirmButton" disabled>Stop and Confirm</button>
         </div>
+        <div class="image-container" id="imageContainer"></div>
     </div>
 
-    <!-- Title and subtitle -->
-    <div id="productionTitle">
-        <h1>We have completed our annual production cycle! Now, let's see how to sequester the emissions from our production!</h1>
-        <p><em>Click the box on the bottom right to review the cup count and how much carbon was emitted</em></p>
-        <button id="returnButton" onclick="returnToArticle()">Return to the article</button>
-    </div>
-
-    <!-- Sticky Summary Box -->
-    <div id="stickySummaryBox" class="sticky-box">
-        <p id="summaryText">No. of cups: 0<br>CO2 Emitted: 0 kg</p>
-        <button id="collapseButton" onclick="toggleSummaryBox()">Click to collapse production table</button>
-    </div>
-
-
-
-
-
-    
     <script>
-        const generateCupButton = document.getElementById('generateCupButton');
-        const imageContainer = document.getElementById('imageContainer');
-        const stickyBox = document.getElementById('stickySummaryBox');
+        const textContainers = document.querySelectorAll('.text-container');
+        let currentIndex = 0;
 
-        // Add new cups when "Generate Cup" button is clicked
+        function showNextText() {
+            if (currentIndex < textContainers.length) {
+                textContainers[currentIndex].classList.add('visible');
+                currentIndex++;
+                setTimeout(showNextText, 1000);
+            } else {
+                document.getElementById('startButton').style.display = 'block';
+            }
+        }
+
+        window.onload = showNextText;
+
+        const startButton = document.getElementById('startButton');
+        const textContainer = document.getElementById('textContainer');
+        const interactiveSection = document.getElementById('interactiveSection');
+        const generateCupButton = document.getElementById('generateCupButton');
+        const confirmButton = document.getElementById('confirmButton');
+        const imageContainer = document.getElementById('imageContainer');
+
+        let cupCount = 0;
+
+        startButton.addEventListener('click', () => {
+            textContainers.forEach(container => {
+                container.style.transform = 'translateX(-100%)';
+                container.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                textContainer.style.display = 'none';
+                interactiveSection.style.display = 'flex';
+            }, 1000);
+        });
+
         generateCupButton.addEventListener('click', () => {
             const img = document.createElement('img');
             img.src = 'https://img.lovepik.com/png/20231019/Steaming-delicious-coffee-and-white-cup-drink-grease_266398_wh1200.png';
             img.alt = 'Cup Image';
-            img.style.width = '100px'; // Fixed width for cup images
-            img.style.height = 'auto'; // Auto height for aspect ratio
+            img.classList.add('cup-image');
+
             imageContainer.appendChild(img);
-        });
 
-        // Function to lock selection and show the sticky summary box
-        function Lock() {
-            const numCups = document.querySelectorAll('#imageContainer img').length;
-            const carbonProduced = (numCups * 1.22).toFixed(2);
-            
-            const fadeElements2 = document.querySelectorAll('.text-container-2');
-            fadeElements2.forEach((el) => {
-                el.style.display="block";
-            });
-
-            // Hide the right-side and left-side container
-            document.querySelector('.container').style.display = 'none';
-            
-            // Show title
-            const productionTitle = document.getElementById('productionTitle');
-            productionTitle.style.display = 'block';
-            productionTitle.style.opacity = 1; // Fade in the title
-            
-
-
-            // Show sticky summary box
-            stickyBox.style.display = 'block';
-            document.getElementById('summaryText').innerHTML = `No. of cups: ${numCups}<br>CO2 Emitted: ${carbonProduced} kg`;
-        }
-
-        // Return to the article from the title
-        function returnToArticle() {
-            const productionTitle = document.getElementById('productionTitle');
-            productionTitle.style.opacity = 0; // Fade out the titlert
             setTimeout(() => {
-                productionTitle.style.display = 'none'; // Hide the title after fade out
-                document.querySelector('.container').style.display = 'flex'; // Bring back the article
-            }, 1000); // Wait for fade-out duration
-        }
+                img.classList.add('visible');
+            }, 10);
 
-        // Toggle collapse/expand of the sticky summary box
-        function toggleSummaryBox() {
-            const stickyContent = document.getElementById('summaryText');
-            const collapseButton = document.getElementById('collapseButton');
-            
-            if (stickyContent.style.display === 'none') {
-                stickyContent.style.display = 'block';
-                stickyBox.style.height = 'auto'; // Reset height
-                stickyBox.style.padding = '10px'; // Reset padding
-                collapseButton.textContent = 'Collapse production table';
-            } else {
-                stickyContent.style.display = 'none';
-                stickyBox.style.height = '40px'; // Only show the button
-                stickyBox.style.padding = '5px'; // Small padding
-                collapseButton.textContent = 'Click to see your production table';
-            }
-        }
-
-        // Initial check on page load for scroll visibility
-        document.addEventListener('scroll', () => {
-            const fadeElements = document.querySelectorAll('.text-container');
-            const fadeElements2 = document.querySelectorAll('.text-container-2');
-            const viewportHeight = window.innerHeight;
-
-            fadeElements.forEach((el) => {
-                const elementTop = el.getBoundingClientRect().top;
-                el.style.opacity = (elementTop < viewportHeight && elementTop > 0) ? 1 : 0;
-            });
-
-            fadeElements2.forEach((el) => {
-                const elementTop = el.getBoundingClientRect().top;
-                el.style.opacity = (elementTop < viewportHeight && elementTop > 0) ? 1 : 0;
-            });
+            cupCount++;
+            confirmButton.disabled = false;
         });
 
-        document.dispatchEvent(new Event('scroll'));
+        confirmButton.addEventListener('click', () => {
+            generateCupButton.disabled = true;
+            confirmButton.disabled = true;
+
+            const carbonProduced = (cupCount * 1.22).toFixed(2);
+            alert(`You have produced ${cupCount} cups.\nCO2 Emitted: ${carbonProduced} kg`);
+        });
     </script>
-    
 </body>
 </html>
